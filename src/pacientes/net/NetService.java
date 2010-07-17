@@ -37,6 +37,7 @@ public class NetService {
     }
 
     public void parser(final String url) {
+        m.showAlert();
         Thread t = new Thread() {
 
             public void run() {

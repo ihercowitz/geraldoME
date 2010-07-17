@@ -5,12 +5,15 @@ package pacientes;
  * and open the template in the editor.
  */
 import java.util.Vector;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import pacientes.ui.ResultadoUI;
 import pacientes.ui.PrincipalUI;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+
 import javax.microedition.midlet.*;
 import pacientes.dto.PacienteDTO;
 import pacientes.net.NetService;
@@ -30,6 +33,7 @@ public class Main extends MIDlet implements CommandListener {
     private ListaPacientesUI listaPacientesUI;
     private Vector vecPacientes;
     private BuscaUI buscaUI;
+    private Alert a;
 
     public void startApp() {
         display = Display.getDisplay(this);
@@ -69,6 +73,13 @@ public class Main extends MIDlet implements CommandListener {
     public void pauseApp() {
     }
 
+    public void showAlert() {
+        a = new Alert("Informação","Obtendo dados. Por favor, aguarde.",null,AlertType.INFO);
+
+        display.setCurrent(a);
+    }
+
+    
     public void destroyApp(boolean unconditional) {
     }
 
@@ -77,6 +88,30 @@ public class Main extends MIDlet implements CommandListener {
         net.setNextAction(nextAction);
         net.parser("http://geraldonrails.heroku.com/pacientes.xml");
 
+
+        vecPacientes = net.getResultadoList();
+
+    }
+
+    private void net(String nextAction, int selectedIndex, String valor) {
+        NetService net = new NetService(this);
+        net.setNextAction(nextAction);
+
+        switch (selectedIndex) {
+            case 1:
+                 net.parser("http://geraldonrails.heroku.com/search_cpf/"+valor+"/xml");
+                break;
+
+            case 2:
+                net.parser("http://geraldonrails.heroku.com/search_nome/"+valor+"/xml");
+                break;
+        }
+//            net.parser("http://geraldonrails.heroku.com/search_cpf/"+valor+"/xml");
+
+        //if (buscar.equals("nome")) {
+        //    System.out.println("http://geraldonrails.heroku.com/search_nome/"+valor+"/xml");
+        //    net.parser("http://geraldonrails.heroku.com/search_nome/"+valor+"/xml");
+        //}
 
         vecPacientes = net.getResultadoList();
 
@@ -124,7 +159,7 @@ public class Main extends MIDlet implements CommandListener {
             }
 
             if (c == buscaUI.getCommandBuscar()) {
-                
+                net("listaPacientes",principalUI.getSelectedIndex(),buscaUI.getTxBusca());
             }
         }
 

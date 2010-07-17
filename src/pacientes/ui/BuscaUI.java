@@ -19,6 +19,7 @@ public class BuscaUI {
     private final CommandListener listener;
     private Command cmdBuscar;
     private Command cmdVoltar;
+    private TextField txBusca;
 
     public BuscaUI(String title, CommandListener listener) {
         this.title = title;
@@ -31,11 +32,16 @@ public class BuscaUI {
         cmdBuscar = new Command("Buscar", Command.SCREEN, 0);
         cmdVoltar = new Command("Voltar", Command.BACK, 1);
 
-        TextField txCpf = new TextField("CPF:", "", 11, TextField.NUMERIC);
+        System.out.println(title);
 
-        f.append(txCpf);
+        if (title.indexOf("CPF")!=-1) {
+           txBusca = new TextField("CPF:", "", 11, TextField.NUMERIC);
+        }
+        else {
+            txBusca = new TextField("Nome:", "", 60,TextField.ANY);
+        }
 
-
+        f.append(txBusca);
         f.addCommand(cmdBuscar);
         f.addCommand(cmdVoltar);
         f.setCommandListener(listener);
@@ -43,6 +49,11 @@ public class BuscaUI {
         return f;
     }
 
+
+    public String getTxBusca() {
+
+        return this.txBusca.getString();
+    }
 
     public Command getCommandBuscar() {
         return this.cmdBuscar;
